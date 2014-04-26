@@ -9,8 +9,12 @@ loop_frame(float fr)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	seaPosition(fr, 0.0f);
+	boatFrame(fr);
+	seaPosition(fr, boatGetPosition().x-25.0f);
+
+
 	seaRender(1.0f);
+	boatRender();
 
 	esGameGlSwap();
 }
@@ -29,7 +33,7 @@ key_quit()
 int
 main()
 {
-	esGameInit(400, 600);
+	esGameInit(WINW, WINH);
 
 	glClearColor(0.1, 0.1, 0.3, 1.0);
 

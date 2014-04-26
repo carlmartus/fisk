@@ -1,10 +1,17 @@
 #include "fisk.h"
+#include <GL/glew.h>
 #include <math.h>
 
 #define WAVE_CELLS 10
-#define WAVE_CELLWIDTH 10.0f
+#define WAVE_CELLWIDTH 5.0f
 #define MAX_VERTS 300
 #define TOP_END 3.0f
+
+enum {
+	UNI_MVP,
+	UNI_COL0,
+	UNI_COL1,
+};
 
 static float prog = 0.0f;
 static float waves[WAVE_CELLS];
@@ -35,6 +42,10 @@ seaSetup(void)
 		return 1;
 	}
 
+	if (esShaderUniformRegister(&shader, UNI_MVP, "un_mvp")) return 1;
+	if (esShaderUniformRegister(&shader, UNI_COL0, "un_col0")) return 1;
+	if (esShaderUniformRegister(&shader, UNI_COL1, "un_col1")) return 1;
+
 	return 0;
 }
 
@@ -45,7 +56,7 @@ generate_waves(float x)
 
 	int i;
 	for (i=0; i<WAVE_CELLS; i++) {
-		waves[i] = sinf(x);
+		waves[i] = seaWaveHeight(x);
 		x += WAVE_CELLWIDTH;
 	}
 }
@@ -65,14 +76,14 @@ push_vertex(float x, float y, float depth)
 }
 
 static void
-generate_vertices(void)
+generate_vertices(float startx)
 {
 	vertcount = 0;
 
 	// Top
 	int i;
 	for (i=0; i<WAVE_CELLS-1; i++) {
-		float x0 = (float) i * WAVE_CELLWIDTH;
+		float x0 = (float) i * WAVE_CELLWIDTH + startx;
 		float x1 = x0 + WAVE_CELLWIDTH;
 		float y0 = waves[i];
 		float y1 = waves[i+1];
@@ -92,12 +103,24 @@ seaPosition(float fr, float startx)
 {
 	prog += fr;
 	generate_waves(startx);
-	generate_vertices();
+	generate_vertices(startx);
+}
+
+float
+seaWaveHeight(float x)
+{
+	return sinf(x*4.0f) + 0.2f*cosf(x*10.0f);
 }
 
 void
 seaRender(float depth)
 {
+	esShaderUse(&shader);
+	glUniformMatrix4fv(esShaderUniformGl(&shader, UNI_MVP), 1, 0,
+			boatMvp());
+	glUniform3f(esShaderUniformGl(&shader, UNI_COL0), 1.0f, 0.0f, 0.0f);
+	glUniform3f(esShaderUniformGl(&shader, UNI_COL1), 0.0f, 1.0f, 0.0f);
+
 	esGeoBufCopy(&vertices, softverts,
 			sizeof(struct sea_vert)*vertcount, GEOBUF_STREAM);
 

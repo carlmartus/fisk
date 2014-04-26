@@ -8,6 +8,7 @@ uniform vec3 un_col1;
 
 void main()
 {
-	gl_FragColor = vec4(1.0, 0.0, va_depth, 1.0);
+	vec3 col = mix(un_col0, un_col1, va_depth);
+	gl_FragColor = vec4(col, 1);
 }
 
