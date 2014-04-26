@@ -5,7 +5,8 @@
 #define WAVE_CELLS 10
 #define WAVE_CELLWIDTH 5.0f
 #define MAX_VERTS 300
-#define TOP_END 3.0f
+#define TOP_END 5.0f
+#define LOWEST 25.0f
 
 enum {
 	UNI_MVP,
@@ -90,11 +91,19 @@ generate_vertices(float startx)
 
 		push_vertex(x0, y0, 0.0f);
 		push_vertex(x1, y1, 0.0f);
-		push_vertex(x1, TOP_END, TOP_END - y1);
+		push_vertex(x1, TOP_END, y1 + TOP_END);
 
 		push_vertex(x0, y0, 0.0f);
-		push_vertex(x1, TOP_END, TOP_END - y1);
-		push_vertex(x0, TOP_END, TOP_END - y0);
+		push_vertex(x1, TOP_END, y1 + TOP_END);
+		push_vertex(x0, TOP_END, y0 + TOP_END);
+
+		push_vertex(x0, TOP_END, 1.0f);
+		push_vertex(x1, TOP_END, 1.0f);
+		push_vertex(x1, LOWEST, 1.0f);
+
+		push_vertex(x0, TOP_END, 1.0f);
+		push_vertex(x1, LOWEST, 1.0f);
+		push_vertex(x0, LOWEST, 1.0f);
 	}
 }
 
@@ -118,8 +127,8 @@ seaRender(float depth)
 	esShaderUse(&shader);
 	glUniformMatrix4fv(esShaderUniformGl(&shader, UNI_MVP), 1, 0,
 			boatMvp());
-	glUniform3f(esShaderUniformGl(&shader, UNI_COL0), 1.0f, 0.0f, 0.0f);
-	glUniform3f(esShaderUniformGl(&shader, UNI_COL1), 0.0f, 1.0f, 0.0f);
+	glUniform3f(esShaderUniformGl(&shader, UNI_COL0), 0.5f, 0.5f, 0.9f);
+	glUniform3f(esShaderUniformGl(&shader, UNI_COL1), 0.0f, 0.0f, 0.5f);
 
 	esGeoBufCopy(&vertices, softverts,
 			sizeof(struct sea_vert)*vertcount, GEOBUF_STREAM);
