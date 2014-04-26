@@ -81,6 +81,7 @@ void esGeoPoint(esGeo *geo, int id, esGeoBuf *geobuf,
 void esGeoRender(const esGeo *geo, int vertices);
 
 // Projection
+typedef struct { float x, y; } esVec2;
 typedef struct { float x, y, z; } esVec3;
 
 void esProjOrtho(float *mat, float x0, float y0, float x1, float y1);

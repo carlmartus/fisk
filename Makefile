@@ -1,13 +1,16 @@
 BIN=bin
+EMCC=/opt/emscripten/emcc
 EXE=$(BIN)/fisk
-CFLAGS=-Wall -O2
+HDIR=html
+HTML=$(HDIR)/fisk.html
+CFLAGS=-Wall -O2 -g
 LDFLAGS=-lSDL -lGL -lGLEW -lSDL_image -lSDL_mixer -lm
 
 SRC=$(wildcard *.c)
 ODIR=obj
 OBJS=$(SRC:%.c=$(ODIR)/%.o)
 
-.PHONY: all clean re
+.PHONY: all html clean re
 .SECONDARY:
 
 all: $(EXE)
@@ -22,8 +25,13 @@ $(ODIR)/%.o: %.c $(ODIR)/.d fisk.h
 	mkdir `dirname $@`
 	touch $@
 
+html: $(HTML)
+
+$(HTML): $(SRC) $(HDIR)/.d
+	$(EMCC) -o $@ $(SRC) --preload-file res
+
 clean:
-	$(RM) $(EXE) -r $(ODIR) $(BIN)
+	$(RM) $(EXE) -r $(ODIR) $(BIN) $(HDIR)
 
 re: clean all
 
