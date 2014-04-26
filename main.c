@@ -10,7 +10,10 @@ loop_frame(float fr)
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	boatFrame(fr);
-	seaPosition(fr, boatGetPosition().x-15.0f);
+	esVec2 boat_pos = boatGetPosition();
+
+	fishMoveFrame(fr, boat_pos.x);
+	seaPosition(fr, boat_pos.x-15.0f);
 
 	seaRender();
 	fishRender();

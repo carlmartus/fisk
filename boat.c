@@ -68,7 +68,7 @@ move_boat(float fr)
 		climb_vec.y = climb_y;
 		climb_vec = commonNormalizeVec2(climb_vec);
 
-		dx += 3.0f*climb;
+		dx += climb;
 	}
 
 	if (states & STATE_UNDER) {

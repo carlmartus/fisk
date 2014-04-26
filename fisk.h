@@ -21,6 +21,7 @@ const float *boatMvp(void);
 enum spriteId {
 	SPRITE_SHIP,
 	SPRITE_FISH_SMALL,
+	SPRITE_FISH_JUMPER,
 };
 
 const esVec2 spriteNoRot;
