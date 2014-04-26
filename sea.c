@@ -102,6 +102,8 @@ void
 seaPosition(float fr, float startx)
 {
 	prog += fr;
+	int cell = startx * (1.0f / WAVE_CELLWIDTH);
+	startx = (float) cell * WAVE_CELLWIDTH;
 	generate_vertices(startx);
 }
 
@@ -113,7 +115,7 @@ seaWaveHeight(float x)
 }
 
 void
-seaRender(float depth)
+seaRender(void)
 {
 	esShaderUse(&shader);
 	glUniformMatrix4fv(esShaderUniformGl(&shader, UNI_MVP), 1, 0,
@@ -126,10 +128,5 @@ seaRender(float depth)
 
 	esShaderUse(&shader);
 	esGeoRender(&geometry, vertcount);
-}
-
-void
-seaHeight(float x)
-{
 }
 

@@ -12,7 +12,7 @@ loop_frame(float fr)
 	boatFrame(fr);
 	seaPosition(fr, boatGetPosition().x-15.0f);
 
-	seaRender(1.0f);
+	seaRender();
 	boatRender();
 	spriteFlushRender();
 

@@ -32,8 +32,7 @@ void spriteFlushRender(void);
 int seaSetup(void);
 void seaPosition(float fr, float startx);
 float seaWaveHeight(float x);
-void seaRender(float depth);
-void seaHeight(float x);
+void seaRender(void);
 
 #endif
 

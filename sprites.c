@@ -100,24 +100,14 @@ spriteAdd(enum spriteId id, float x, float y, esVec2 trans)
 	/* a b
 	 * c d */
 
-	/*
-	a.x = -(vec_x.x + vec_y.x);
-	a.y =  (vec_x.y + vec_y.y);
-	b.x =  (vec_x.x + vec_y.x);
-	b.y =  (vec_x.y + vec_y.y);
-	c.x = -(vec_x.x + vec_y.x);
-	c.y = -(vec_x.y + vec_y.y);
-	d.x =  (vec_x.x + vec_y.x);
-	d.y = -(vec_x.y + vec_y.y);*/
-
-	a.x = -vec_x.x + vec_y.x;
-	a.y = -vec_x.y + vec_y.y;
-	b.x =  vec_x.x + vec_y.x;
-	b.y =  vec_x.y + vec_y.y;
-	c.x = -vec_x.x - vec_y.x;
-	c.y = -vec_x.y - vec_y.y;
-	d.x =  vec_x.x - vec_y.x;
-	d.y =  vec_x.y - vec_y.y;
+	a.x = x - vec_x.x + vec_y.x;
+	a.y = y - vec_x.y + vec_y.y;
+	b.x = x + vec_x.x + vec_y.x;
+	b.y = y + vec_x.y + vec_y.y;
+	c.x = x - vec_x.x - vec_y.x;
+	c.y = y - vec_x.y - vec_y.y;
+	d.x = x + vec_x.x - vec_y.x;
+	d.y = y + vec_x.y - vec_y.y;
 
 	push_vertex(a.x, a.y, uv.u0, uv.v1);
 	push_vertex(b.x, b.y, uv.u1, uv.v1);
