@@ -13,6 +13,7 @@
 
 static float x, y;
 static float dx, dy;
+static esVec2 climb_vec;
 static float mvp[16];
 static unsigned states;
 static unsigned int ctrl_left, ctrl_right;
@@ -44,7 +45,14 @@ move_boat(float fr)
 	if (ctrl_right)	lx -= 1.0f;
 
 	float wm = seaWaveHeight(x);
+	float w0 = seaWaveHeight(x - RADIUS);
+	float w1 = seaWaveHeight(x + RADIUS);
 	float dm = y - wm;
+
+	float climb = (wm - w0) + (w1 - wm);
+	climb_vec.x = 1.0f;
+	climb_vec.y = climb;
+	climb_vec = commonNormalizeVec2(climb_vec);
 
 	if (y > wm) states |= STATE_UNDER;
 	else states &= ~STATE_UNDER;
@@ -60,6 +68,7 @@ move_boat(float fr)
 
 	x += dx*fr;
 	y += dy*fr;
+	y = seaWaveHeight(x);
 }
 
 void
@@ -69,15 +78,15 @@ boatFrame(float fr)
 
 	esProjOrtho(mvp,
 			x - ZOOM * (float) WINW,
-			y + ZOOM * (float) WINW,
+			y + ZOOM * (float) WINH,
 			x + ZOOM * (float) WINW,
-			y - ZOOM * (float) WINW);
+			y - ZOOM * (float) WINH);
 }
 
 void
 boatRender(void)
 {
-	spriteAdd(SPRITE_SHIP, x, y, spriteNoRot);
+	spriteAdd(SPRITE_SHIP, x, y, climb_vec);
 }
 
 esVec2

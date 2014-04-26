@@ -8,6 +8,7 @@
 
 // common.c
 float commonTowardsFloat(float src, float dst, float move);
+esVec2 commonNormalizeVec2(esVec2 v);
 
 // boat.c
 int boatSetup();

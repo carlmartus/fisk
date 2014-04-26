@@ -16,7 +16,6 @@ enum {
 };
 
 static float prog = 0.0f;
-static float waves[WAVE_CELLS];
 
 static esShader shader;
 static esGeo geometry;
@@ -52,16 +51,6 @@ seaSetup(void)
 }
 
 static void
-generate_waves(float x)
-{
-	int i;
-	for (i=0; i<WAVE_CELLS; i++) {
-		waves[i] = seaWaveHeight(x);
-		x += WAVE_CELLWIDTH;
-	}
-}
-
-static void
 push_vertex(float x, float y, float depth)
 {
 	if (vertcount >= MAX_VERTS) return;
@@ -76,17 +65,18 @@ push_vertex(float x, float y, float depth)
 }
 
 static void
-generate_vertices(float startx)
+generate_vertices(float x)
 {
 	vertcount = 0;
 
 	// Top
 	int i;
 	for (i=0; i<WAVE_CELLS-1; i++) {
-		float x0 = (float) i * WAVE_CELLWIDTH + startx;
+		float x0 = x;
 		float x1 = x0 + WAVE_CELLWIDTH;
-		float y0 = waves[i];
-		float y1 = waves[i+1];
+
+		float y0 = seaWaveHeight(x0);
+		float y1 = seaWaveHeight(x1);
 
 		push_vertex(x0, y0, 0.0f);
 		push_vertex(x1, y1, 0.0f);
@@ -103,6 +93,8 @@ generate_vertices(float startx)
 		push_vertex(x0, TOP_END, 1.0f);
 		push_vertex(x1, LOWEST, 1.0f);
 		push_vertex(x0, LOWEST, 1.0f);
+
+		x += WAVE_CELLWIDTH;
 	}
 }
 
@@ -110,7 +102,6 @@ void
 seaPosition(float fr, float startx)
 {
 	prog += fr;
-	generate_waves(startx);
 	generate_vertices(startx);
 }
 

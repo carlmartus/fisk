@@ -100,6 +100,7 @@ spriteAdd(enum spriteId id, float x, float y, esVec2 trans)
 	/* a b
 	 * c d */
 
+	/*
 	a.x = -(vec_x.x + vec_y.x);
 	a.y =  (vec_x.y + vec_y.y);
 	b.x =  (vec_x.x + vec_y.x);
@@ -107,7 +108,16 @@ spriteAdd(enum spriteId id, float x, float y, esVec2 trans)
 	c.x = -(vec_x.x + vec_y.x);
 	c.y = -(vec_x.y + vec_y.y);
 	d.x =  (vec_x.x + vec_y.x);
-	d.y = -(vec_x.y + vec_y.y);
+	d.y = -(vec_x.y + vec_y.y);*/
+
+	a.x = -vec_x.x + vec_y.x;
+	a.y = -vec_x.y + vec_y.y;
+	b.x =  vec_x.x + vec_y.x;
+	b.y =  vec_x.y + vec_y.y;
+	c.x = -vec_x.x - vec_y.x;
+	c.y = -vec_x.y - vec_y.y;
+	d.x =  vec_x.x - vec_y.x;
+	d.y =  vec_x.y - vec_y.y;
 
 	push_vertex(a.x, a.y, uv.u0, uv.v1);
 	push_vertex(b.x, b.y, uv.u1, uv.v1);
@@ -116,15 +126,6 @@ spriteAdd(enum spriteId id, float x, float y, esVec2 trans)
 	push_vertex(a.x, a.y, uv.u0, uv.v1);
 	push_vertex(d.x, d.y, uv.u1, uv.v0);
 	push_vertex(c.x, c.y, uv.u0, uv.v0);
-
-	/*
-	push_vertex(a.x, a.y, 0, 1);
-	push_vertex(b.x, b.y, 1, 1);
-	push_vertex(d.x, d.y, 1, 0);
-
-	push_vertex(a.x, a.y, 0, 1);
-	push_vertex(d.x, d.y, 1, 0);
-	push_vertex(c.x, c.y, 0, 0);*/
 }
 
 void
