@@ -60,14 +60,16 @@ move_boat(float fr)
 	else states &= ~STATE_UNDER;
 
 	if (states & STATE_UNDER) {
+		dx = commonTowardsFloat(dx, lx*MAXSPEED, fr*MOVEX);
+
 		float climb = (wm - w0) + (w1 - wm);
 		climb_vec.x = 0.5f;
 		climb_y = commonTowardsFloat(climb_y, climb, fr*0.5f);
 		climb_vec.y = climb_y;
 		climb_vec = commonNormalizeVec2(climb_vec);
-	}
 
-	dx = commonTowardsFloat(dx, lx*MAXSPEED, fr*MOVEX);
+		dx += 3.0f*climb;
+	}
 
 	if (states & STATE_UNDER) {
 		dy = commonTowardsFloat(dy, -dm-FLOATING_ADD, FLOATING*fr);
