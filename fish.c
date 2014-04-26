@@ -3,9 +3,12 @@
 #include <string.h>
 
 #define LIMIT 30.0f
+#define SPAWN_BLOCKS 3.0f
+#define MIN_FISHES 5
 
 static float centre;
 static int framecount = 0;
+static int generation = 0;
 
 enum fishType {
 	FISH_NONE=0,
@@ -31,21 +34,50 @@ static const struct info {
 	},
 };
 
+static int
+get_free_id(void)
+{
+	const struct fish *itr, *end;
+	itr = fishes;
+	end = itr + MAX_FISH;
+
+	int i = 0;
+	while (itr < end) {
+		if (itr->type == FISH_NONE) return i;
+		itr++;
+		i++;
+	}
+	return 0;
+}
+
+static void
+spawn_something(float x)
+{
+	float dy = 0.4f * ((float) (generation % 6) - 2.0f);
+
+	struct fish f = {
+		.type = FISH_SMALL,
+		.x = x,
+		.y = infos[FISH_SMALL].bestlevel,
+		.dx = 0.2f,
+		.dy = dy,
+		.age = 0,
+	};
+
+	fishes[get_free_id()] = f;
+}
+
 int
 fishSetup(void)
 {
 	centre = 0.0f;
 	memset(fishes, 0, sizeof(fishes));
 
-	fishes[0].type = FISH_SMALL;
-	fishes[0].x = 0.0f;
-	fishes[0].y = 8.0f;
-	fishes[0].dx = 1.3f;
-	fishes[0].dy = -2.1f;
+	spawn_something(0.0f);
 	return 0;
 }
 
-static void
+static int
 respawn_outside(void)
 {
 	float lo = centre - LIMIT;
@@ -68,18 +100,43 @@ respawn_outside(void)
 
 		itr++;
 	}
+
+	return count;
 }
 
 static void
 move_world(float x)
 {
+	int count = respawn_outside();
+
+	if (count < MIN_FISHES ) {
+		int old_cell = (int) ((1.0f / SPAWN_BLOCKS) * centre);
+		int new_cell = (int) ((1.0f / SPAWN_BLOCKS) * x);
+
+		if (old_cell != new_cell) {
+
+			if (new_cell < old_cell) {
+				spawn_something(x - LIMIT + SPAWN_BLOCKS);
+			} else if (new_cell > old_cell) {
+				spawn_something(x + LIMIT - SPAWN_BLOCKS);
+			}
+		}
+	}
+
 	centre = x;
-	respawn_outside();
 }
 
 static void
-move_fish(struct fish *fish, float fr)
+swim(struct fish *fish, float fr)
 {
+	if ((fish->age & 7) == 0) {
+		/*
+		fish->dy = commonTowardsFloat(fish->dy,
+				infos[fish->type].bestlevel - fish->y, fr);*/
+		fish->dy = commonTowardsFloat(fish->dy, 0.0f, fr);
+	}
+
+	fish->age++;
 	fish->x += fish->dx*fr;
 	fish->y += fish->dy*fr;
 }
@@ -93,7 +150,7 @@ move_fishes(float fr)
 
 	while (itr < end) {
 		if (itr->type != FISH_NONE) {
-			move_fish(itr, fr);
+			swim(itr, fr);
 		}
 		itr++;
 	}
@@ -103,6 +160,7 @@ void
 fishMoveFrame(float fr, float x)
 {
 	if ((framecount++ & 7) == 0) {
+		generation++;
 		move_world(x);
 	}
 
