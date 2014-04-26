@@ -20,6 +20,7 @@ const float *boatMvp(void);
 // sprites.c
 enum spriteId {
 	SPRITE_SHIP,
+	SPRITE_FISH_SMALL,
 };
 
 const esVec2 spriteNoRot;
@@ -33,6 +34,11 @@ int seaSetup(void);
 void seaPosition(float fr, float startx);
 float seaWaveHeight(float x);
 void seaRender(void);
+
+// fish.c
+int fishSetup(void);
+void fishMoveFrame(float fr, float x);
+void fishRender(void);
 
 #endif
 

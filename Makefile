@@ -1,5 +1,5 @@
 BIN=bin
-EMCC=/opt/emscripten/emcc
+EMCC=emcc
 EXE=$(BIN)/fisk
 HDIR=html
 HTML=$(HDIR)/fisk.html
@@ -28,7 +28,7 @@ $(ODIR)/%.o: %.c $(ODIR)/.d fisk.h
 html: $(HTML)
 
 $(HTML): $(SRC) $(HDIR)/.d
-	$(EMCC) -o $@ $(SRC) --preload-file res
+	$(EMCC) -o $@ -Wall -O2 $(SRC) --preload-file res
 
 clean:
 	$(RM) $(EXE) -r $(ODIR) $(BIN) $(HDIR)

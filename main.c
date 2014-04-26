@@ -13,6 +13,7 @@ loop_frame(float fr)
 	seaPosition(fr, boatGetPosition().x-15.0f);
 
 	seaRender();
+	fishRender();
 	boatRender();
 	spriteFlushRender();
 
@@ -46,6 +47,11 @@ main()
 
 	if (spriteSetup()) {
 		printf("Cannot setup sprites!\n");
+		return 1;
+	}
+
+	if (fishSetup()) {
+		printf("Cannot setup fish!\n");
 		return 1;
 	}
 

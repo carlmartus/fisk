@@ -4,7 +4,7 @@
 #define FILE_GRID 4
 #define UV_RAD (1.0f / (float) FILE_GRID)
 
-#define STRUCT_UV(x, y, dim) {\
+#define _UV(x, y, dim) {\
 	.u0 = (float) (x+0) * UV_RAD,\
 	.v0 = (float) (y+0) * UV_RAD,\
 	.u1 = (float) (x+1) * (UV_RAD*dim),\
@@ -15,7 +15,8 @@
 static const struct file_uv {
 	float u0, v0, u1, v1;
 } file_uvs[] = {
-	[SPRITE_SHIP] = STRUCT_UV(0, 0, 2),
+	[SPRITE_SHIP] = _UV(0, 0, 2),
+	[SPRITE_FISH_SMALL] = _UV(0, 3, 1),
 };
 
 static struct sprite_vert {
