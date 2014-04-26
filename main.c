@@ -10,18 +10,13 @@ loop_frame(float fr)
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	boatFrame(fr);
-	seaPosition(fr, boatGetPosition().x-25.0f);
-
+	seaPosition(fr, boatGetPosition().x-15.0f);
 
 	seaRender(1.0f);
 	boatRender();
+	spriteFlushRender();
 
 	esGameGlSwap();
-}
-
-static void
-loop_exit(void)
-{
 }
 
 static void
@@ -49,7 +44,12 @@ main()
 		return 1;
 	}
 
-	esGameLoop(loop_frame, loop_exit, 0);
+	if (spriteSetup()) {
+		printf("Cannot setup sprites!\n");
+		return 1;
+	}
+
+	esGameLoop(loop_frame, NULL, 0);
 	return 0;
 }
 

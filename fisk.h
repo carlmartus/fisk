@@ -6,6 +6,9 @@
 #define WINW 400
 #define WINH 600
 
+// common.c
+float commonTowardsFloat(float src, float dst, float move);
+
 // boat.c
 int boatSetup();
 void boatFrame(float fr);
@@ -15,11 +18,14 @@ const float *boatMvp(void);
 
 // sprites.c
 enum spriteId {
-	SPRITE_STAR,
+	SPRITE_SHIP,
 };
 
-void spriteSetup(void);
-void spriteAdd(enum spriteId id, float x, float y, float rad, esVec2 rot);
+const esVec2 spriteNoRot;
+
+int spriteSetup(void);
+void spriteAdd(enum spriteId id, float x, float y, esVec2 trans);
+void spriteFlushRender(void);
 
 // sea.c
 int seaSetup(void);

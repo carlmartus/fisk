@@ -3,7 +3,8 @@
 #include <math.h>
 
 #define WAVE_CELLS 10
-#define WAVE_CELLWIDTH 5.0f
+#define WAVE_CELLWIDTH 3.0f
+#define WAVE_SPEED 10.0f
 #define MAX_VERTS 300
 #define TOP_END 5.0f
 #define LOWEST 25.0f
@@ -22,7 +23,7 @@ static esGeo geometry;
 static esGeoBuf vertices;
 static int vertcount;
 
-struct sea_vert {
+static struct sea_vert {
 	float x, y;
 	float depth;
 } softverts[MAX_VERTS];
@@ -53,8 +54,6 @@ seaSetup(void)
 static void
 generate_waves(float x)
 {
-	x += prog;
-
 	int i;
 	for (i=0; i<WAVE_CELLS; i++) {
 		waves[i] = seaWaveHeight(x);
@@ -118,7 +117,8 @@ seaPosition(float fr, float startx)
 float
 seaWaveHeight(float x)
 {
-	return sinf(x*4.0f) + 0.2f*cosf(x*10.0f);
+	x = prog*WAVE_SPEED + x;
+	return sinf(x*0.2f) - 0.2f*cosf(x*0.6f);
 }
 
 void

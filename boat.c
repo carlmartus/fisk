@@ -1,40 +1,83 @@
 #include "fisk.h"
+#include <SDL/SDL.h>
 
 #define ZOOM 0.02f
+
+#define STATE_UNDER 1
+#define GRAVITY 9.82f
+#define FLOATING (GRAVITY*3.0f)
+#define MOVEX 0.2f
+#define MAXSPEED 0.5f
+
+#define RADIUS 0.2f
 
 static float x, y;
 static float dx, dy;
 static float mvp[16];
+static unsigned states;
+static unsigned int ctrl_left, ctrl_right;
+
+static void key_left(int sdlkey, int down)	{ ctrl_left = down; }
+static void key_right(int sdlkey, int down)	{ ctrl_right = down; }
 
 int
 boatSetup()
 {
+	esGameRegisterKey(SDLK_LEFT, key_left);
+	esGameRegisterKey(SDLK_RIGHT, key_right);
+
+	states = 0;
+
 	x = 0.0f;
-	y = -10.0f;
+	y = -1.0f;
 	dx = 0.0f;
 	dy = 0.0f;
 
 	return 0;
 }
 
+static void
+move_boat(float fr)
+{
+	float lx = 0.0f;
+	if (ctrl_left)	lx += 1.0f;
+	if (ctrl_right)	lx -= 1.0f;
+
+	float wm = seaWaveHeight(x);
+	float dm = y - wm;
+
+	if (y > wm) states |= STATE_UNDER;
+	else states &= ~STATE_UNDER;
+
+	dx = commonTowardsFloat(dx, lx*MAXSPEED, fr*MOVEX);
+
+	if (states & STATE_UNDER) {
+		dy = commonTowardsFloat(dy, -dm, FLOATING*fr);
+		//dy -= FLOATING*fr*dm;
+	} else {
+		dy += GRAVITY*fr;
+	}
+
+	x += dx*fr;
+	y += dy*fr;
+}
+
 void
 boatFrame(float fr)
 {
-	x += dx*fr;
-	y += dy*fr;
+	move_boat(fr);
 
-	float x0, y0, x1, y1;
-	x0 = x - ZOOM * (float) WINW;
-	x1 = x + ZOOM * (float) WINW;
-	y0 = y - ZOOM * (float) WINH;
-	y1 = y + ZOOM * (float) WINH;
-
-	esProjOrtho(mvp, x0, x1, y1, y0);
+	esProjOrtho(mvp,
+			x - ZOOM * (float) WINW,
+			y + ZOOM * (float) WINW,
+			x + ZOOM * (float) WINW,
+			y - ZOOM * (float) WINW);
 }
 
 void
 boatRender(void)
 {
+	spriteAdd(SPRITE_SHIP, x, y, spriteNoRot);
 }
 
 esVec2
