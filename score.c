@@ -20,15 +20,47 @@ static const struct {
 	float f0, a0, f1, a1;
 	const char *name;
 } challenges[] = {
-	{ 0,	2, 0, 0, 0,		0.0f, 0.0f, 0.0f, 0.0f, "Welcome!" },
-	{ 20,	0, 0, 0, 0,		0.5f, 0.6f, 0.7f, 0.2f, "Challenge 1" },
-	{ 0,	0, 0, 0, 0,		1.2f, 0.8f, 1.3f, 0.2f, "Challenge 2" },
+	{ 0,	2, 0, 0, 0,		0.0f, 0.0f, 0.0f, 0.0f, "Welcome" },
+	{ 20,	0, 0, 0, 0,		0.5f, 0.6f, 0.7f, 0.2f, "Fisherman" },
+	{ 0,	0, 0, 0, 0,		1.2f, 0.8f, 1.3f, 0.2f, "Shaky storm" },
 };
 
 void
 flush(void)
 {
 	fprintf(stderr, CLEAR_MSG);
+
+	if (challenge > 0) {
+		int i;
+		for (i=0; i<challenge; i++) {
+			fprintf(stderr, "<p>Level: %s <img src=\"ok.png\"/></p>\n",
+					challenges[i].name);
+		}
+	}
+
+	fprintf(stderr, "<p>Current mission:<br/><b>%s</b></p>\n<ul>",
+			challenges[challenge].name);
+
+	if (challenges[challenge].kgs > 0) {
+		fprintf(stderr, "<li>Catch %d kg fish</li>\n", challenges[challenge].kgs);
+	}
+
+	if (challenges[challenge].fish0 > 0) {
+		fprintf(stderr, "<li>Salmon qty: %d</li>\n", challenges[challenge].fish0);
+	}
+	if (challenges[challenge].fish1 > 0) {
+		fprintf(stderr, "<li>Turtles qty: %d</li>\n", challenges[challenge].fish1);
+	}
+	if (challenges[challenge].fish2 > 0) {
+		fprintf(stderr, "<li>Flying fish qty: %d</li>\n", challenges[challenge].fish2);
+	}
+	if (challenges[challenge].fish3 > 0) {
+		fprintf(stderr, "<li>Questionable fish qty: %d</li>\n", challenges[challenge].fish3);
+	}
+
+	fprintf(stderr, "</ul>\n");
+
+	fprintf(stderr, "<p>Your status:</p>\n");
 	fprintf(stderr, "<p>You've caught <b>%d</b> Kg fish</p>\n", kgs);
 }
 
@@ -95,14 +127,8 @@ has_requirements(void)
 void
 scoreCaught(enum fishType id)
 {
-	static int fishmap[] = {
-		[FISH_SMALL] = 0,
-	};
-
-	int fish = fishmap[id];
-
-	kgs += fishes[fish].kgs;
-	catches[fish]++;
+	kgs += fishes[id].kgs;
+	catches[id-1]++;
 
 	if (has_requirements()) {
 		scoreNextChallenge();
@@ -121,10 +147,9 @@ scoreHelp(void)
 			"<b>DOWN ARROW</b> - Lower rope<br/>"
 			"<b>LEFT ARROW</b> - Drive left<br/>"
 			"<b>RIGHT ARROW</b> - Drive right<br/>\n");
-	fprintf(stderr, "<p>Press <b>UP ARROW</b> to start!</p>\n");
 
 	fprintf(stderr, "<p>Challenge</p>\n");
-	fprintf(stderr, "<p><ul><li>Catch 2 small fish</li></ul></p>\n");
+	fprintf(stderr, "<p><ul><li>Catch 2 salmon fishes</li></ul></p>\n");
 	fprintf(stderr, "<p><b>WARNING</b> You must have a brand new browser to fish</p>\n");
 }
 

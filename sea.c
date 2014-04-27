@@ -109,6 +109,8 @@ seaWaveSettings(float f0, float a0, float f1, float a1)
 	waves_set.a0 = a0;
 	waves_set.f1 = f1;
 	waves_set.a1 = a1;
+	waves_current.f0 = f0;
+	waves_current.f1 = f1;
 }
 
 void

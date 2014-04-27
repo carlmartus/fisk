@@ -157,11 +157,8 @@ move_boat(float fr)
 	x += dx*fr;
 	y += dy*fr;
 
-	esVec2 cam_dst = {
-		hook_loc.x,
-		hook_loc.y,
-	};
-	cam = commonTowardsVec2(cam, cam_dst, 100.0f*fr);
+	cam.x = commonTowardsFloat(cam.x, hook_loc.x, 100.0f*fr);
+	cam.y = commonTowardsFloat(cam.y, hook_loc.y, 2.0f*fr);
 }
 
 static void

@@ -5,7 +5,7 @@ HDIR=html
 HTML=$(HDIR)/fisk.html
 CFLAGS=-Wall -O2 -g
 LDFLAGS=-lSDL -lGL -lGLEW -lSDL_image -lSDL_mixer -lm
-HTML_ADD=index.html art/logo.png
+HTML_ADD=index.html art/logo.png art/ok.png
 
 SRC=$(wildcard *.c)
 ODIR=obj

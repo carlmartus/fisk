@@ -72,7 +72,6 @@ main()
 	esGameRegisterKey(SDLK_q, key_quit);
 #endif
 
-	scoreNextChallenge();
 	esGameLoop(loop_frame, NULL, 0);
 	return 0;
 }
