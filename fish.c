@@ -37,7 +37,7 @@ static const struct info {
 	},
 	[FISH_BIKE] = {
 		.sprite = SPRITE_FISH_BIKE,
-		.radius = 1.0f,
+		.radius = 0.6f,
 		.speed = 0.0f,
 		.bestlevel = 12.0f,
 	},
