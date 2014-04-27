@@ -43,5 +43,11 @@ int fishSetup(void);
 void fishMoveFrame(float fr, float x);
 void fishRender(void);
 
+// score.c
+int scoreSetup(void);
+void scoreResetObjective(int kgs, int fish0, int fish1, int fish2, int fish3);
+void scoreCaught(int fish_id);
+void scoreFlush(void);
+
 #endif
 

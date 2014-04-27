@@ -10,6 +10,7 @@ body {
 }
 
 #output {
+	padding-left: 20px;
 	width: 200px;
 }
 
@@ -26,13 +27,13 @@ body {
 <center>
 	<table>
 		<tr>
-			<td rowspan="2">
+			<td>
 				<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
 			</td>
 
 			<td valign="top">
 				<img src="logo.png"/>
-				<div id="output">Hello</div>
+				<div id="output">&nbsp;</div>
 			</td>
 		</tr>
 
@@ -40,15 +41,23 @@ body {
 </center>
 
 <script type='text/javascript'>
+  if (typeof String.prototype.startsWith != 'function') {
+    String.prototype.startsWith = function (str){
+    	return this.slice(0, str.length) == str;
+    };
+  }
+
   var Module = {
 	printErr: function(text) {
-		if (text == "[CLEAR]") {
+		if (text.startsWith("[CLEAR]")) {
 			document.getElementById('output').innerHTML = "";
 		} else {
 			document.getElementById('output').innerHTML += text;
 		}
 	},
 	canvas: document.getElementById('canvas'),
+	setStatus: function(text) {
+	},
   };
   Module.setStatus('Downloading...');
 </script>

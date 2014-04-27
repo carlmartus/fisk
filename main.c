@@ -7,6 +7,8 @@
 static void
 loop_frame(float fr)
 {
+	if (fr > 0.3f) return;
+
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	boatFrame(fr);
@@ -58,8 +60,10 @@ main()
 		return 1;
 	}
 
-	fprintf(stderr, "[CLEAR]\n");
-	fprintf(stderr, "Hello %d\n", 2);
+	if (scoreSetup()) {
+		printf("Cannot start score system\n");
+		return 1;
+	}
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
