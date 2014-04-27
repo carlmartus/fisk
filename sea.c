@@ -2,12 +2,12 @@
 #include <GL/glew.h>
 #include <math.h>
 
-#define WAVE_CELLS 10
+#define WAVE_CELLS 13
 #define WAVE_CELLWIDTH 3.0f
 #define WAVE_SPEED 10.0f
 #define MAX_VERTS 300
 #define TOP_END 5.0f
-#define LOWEST 25.0f
+#define LOWEST 50.0f
 
 enum {
 	UNI_MVP,

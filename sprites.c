@@ -16,6 +16,7 @@ static const struct file_uv {
 	float u0, v0, u1, v1;
 } file_uvs[] = {
 	[SPRITE_SHIP] = _UV(0, 0, 2),
+	[SPRITE_HOOK] = _UV(2, 1, 1),
 	[SPRITE_FISH_SMALL] = _UV(0, 3, 1),
 };
 

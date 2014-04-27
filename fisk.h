@@ -8,6 +8,7 @@
 
 // common.c
 float commonTowardsFloat(float src, float dst, float move);
+esVec2 commonTowardsVec2(esVec2 src, esVec2 dst, float move);
 esVec2 commonNormalizeVec2(esVec2 v);
 
 // boat.c
@@ -20,6 +21,7 @@ const float *boatMvp(void);
 // sprites.c
 enum spriteId {
 	SPRITE_SHIP,
+	SPRITE_HOOK,
 	SPRITE_FISH_SMALL,
 	SPRITE_FISH_JUMPER,
 };
