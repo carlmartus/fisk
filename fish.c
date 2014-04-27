@@ -73,10 +73,10 @@ get_free_id(void)
 static enum fishType
 get_random_type(void)
 {
-	int r = framecount % weight_all;
+	int r = generation % weight_all;
 	if (r < weight_submarine)	return FISH_SUBMARINE;
-	if (r < weight_flying)		return FISH_FLYING;
 	if (r < weight_bike)		return FISH_BIKE;
+	if (r < weight_flying)		return FISH_FLYING;
 	return FISH_SMALL;
 }
 
@@ -86,7 +86,6 @@ spawn_something(float x)
 	float dy = 0.4f * ((float) (generation % 6) - 2.0f);
 
 	enum fishType id = get_random_type();
-	printf("Spawn %d\n", id);
 
 	struct fish f = {
 		.type = id,
@@ -285,7 +284,7 @@ fishEnableSpawn(enum fishType type)
 {
 	switch (type) {
 		case FISH_SUBMARINE :
-			weight_submarine = 100;
+			weight_submarine = 3;
 			weight_all += weight_submarine;
 			break;
 

@@ -27,9 +27,9 @@ static const struct {
 	{ 0,	2, 0, 0, 0,		0.0f, 0.0f, 0.0f, 0.0f,		FISH_NONE, "Welcome" },
 	{ 20,	0, 0, 0, 0,		0.5f, 0.6f, 0.7f, 0.2f,		FISH_NONE, "Fisherman" },
 	{ 0,	0, 5, 0, 0,		0.2f, 0.9f, 1.3f, 0.2f,		FISH_BIKE, "Trashman" },
-	{ 80,	0, 0, 2, 0,		0.1f, 0.2f, 0.3f, 0.4f,		FISH_FLYING, "Fancy fish" },
+	{ 40,	0, 0, 2, 0,		0.1f, 0.2f, 0.3f, 0.4f,		FISH_FLYING, "Fancy fish" },
 	{ 9000,	0, 0, 0, 0,		0.3f, 0.9f, 0.7f, 0.2f,		FISH_SUBMARINE, "Something big" },
-	{ 0,	1, 1, 1, 1,		0.1f, 3.8f, 1.3f, 0.4f,		FISH_NONE, "One of each" },
+	{ 0,	1, 1, 1, 1,		0.1f, 1.8f, 1.3f, 0.4f,		FISH_NONE, "One of each" },
 };
 #define CHALLENGE_COUNT 6
 
