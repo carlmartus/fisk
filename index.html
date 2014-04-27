@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en-us">
+<head>
+<title>Mr. Fisk</title>
+
+<style>
+body {
+	background-color: #000;
+	color: #fff;
+}
+
+#output {
+	width: 200px;
+}
+
+.logo {
+	height: 100px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<center>
+	<table>
+		<tr>
+			<td rowspan="2">
+				<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+			</td>
+
+			<td valign="top">
+				<img src="logo.png"/>
+				<div id="output">Hello</div>
+			</td>
+		</tr>
+
+	</table>
+</center>
+
+<script type='text/javascript'>
+  var Module = {
+	printErr: function(text) {
+		if (text == "[CLEAR]") {
+			document.getElementById('output').innerHTML = "";
+		} else {
+			document.getElementById('output').innerHTML += text;
+		}
+	},
+	canvas: document.getElementById('canvas'),
+  };
+  Module.setStatus('Downloading...');
+</script>
+<script async type="text/javascript" src="fisk.js"></script>
+
+</body>
+
+</html>
+

@@ -58,6 +58,9 @@ main()
 		return 1;
 	}
 
+	fprintf(stderr, "[CLEAR]\n");
+	fprintf(stderr, "Hello %d\n", 2);
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
