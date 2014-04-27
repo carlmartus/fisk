@@ -19,15 +19,40 @@ static struct fish {
 
 static const struct info {
 	enum spriteId sprite;
+	float speed;
 	float radius;
 	float bestlevel;
 } infos[] = {
 	[FISH_SMALL] = {
 		.sprite = SPRITE_FISH_SMALL,
 		.radius = 0.5f,
+		.speed = 1.0f,
 		.bestlevel = 8.0f,
 	},
+	[FISH_FLYING] = {
+		.sprite = SPRITE_FISH_FLYING,
+		.radius = 0.5f,
+		.speed = 4.0f,
+		.bestlevel = 4.0f,
+	},
+	[FISH_BIKE] = {
+		.sprite = SPRITE_FISH_BIKE,
+		.radius = 1.0f,
+		.speed = 0.0f,
+		.bestlevel = 12.0f,
+	},
+	[FISH_SUBMARINE] = {
+		.sprite = SPRITE_FISH_SUBMARINE,
+		.radius = 3.0f,
+		.speed = 0.0f,
+		.bestlevel = 12.0f,
+	},
 };
+
+static int weight_bike = 0;
+static int weight_flying = 0;
+static int weight_submarine = 0;
+static int weight_all = 20;
 
 static int
 get_free_id(void)
@@ -45,13 +70,26 @@ get_free_id(void)
 	return 0;
 }
 
+static enum fishType
+get_random_type(void)
+{
+	int r = framecount % weight_all;
+	if (r < weight_submarine)	return FISH_SUBMARINE;
+	if (r < weight_flying)		return FISH_FLYING;
+	if (r < weight_bike)		return FISH_BIKE;
+	return FISH_SMALL;
+}
+
 static void
 spawn_something(float x)
 {
 	float dy = 0.4f * ((float) (generation % 6) - 2.0f);
 
+	enum fishType id = get_random_type();
+	printf("Spawn %d\n", id);
+
 	struct fish f = {
-		.type = FISH_SMALL,
+		.type = id,
 		.x = x,
 		.y = infos[FISH_SMALL].bestlevel,
 		.dx = 0.2f,
@@ -105,7 +143,7 @@ move_world(float x)
 {
 	int count = respawn_outside();
 
-	if (count < MIN_FISHES ) {
+	if (count < MIN_FISHES || (count < MAX_FISH && (framecount & 3) == 0)) {
 		int old_cell = (int) ((1.0f / SPAWN_BLOCKS) * centre);
 		int new_cell = (int) ((1.0f / SPAWN_BLOCKS) * x);
 
@@ -240,5 +278,28 @@ fishHook(float x, float y)
 	}
 
 	return FISH_NONE;
+}
+
+void
+fishEnableSpawn(enum fishType type)
+{
+	switch (type) {
+		case FISH_SUBMARINE :
+			weight_submarine = 100;
+			weight_all += weight_submarine;
+			break;
+
+		case FISH_BIKE :
+			weight_bike = 8;
+			weight_all += weight_bike;
+			break;
+
+		case FISH_FLYING :
+			weight_flying = 14;
+			weight_all += weight_flying;
+			break;
+
+		default : break;
+	}
 }
 

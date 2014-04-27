@@ -7,8 +7,8 @@
 #define _UV(x, y, dim) {\
 	.u0 = (float) (x+0) * UV_RAD,\
 	.v0 = (float) (y+0) * UV_RAD,\
-	.u1 = (float) (x+1) * (UV_RAD*dim),\
-	.v1 = (float) (y+1) * (UV_RAD*dim),\
+	.u1 = (float) (x+dim) * UV_RAD,\
+	.v1 = (float) (y+dim) * UV_RAD,\
 }
 
 #define MAX_VERTS 300
@@ -19,6 +19,9 @@ static const struct file_uv {
 	[SPRITE_HOOK] = _UV(2, 1, 1),
 	[SPRITE_ROPE] = _UV(3, 0, 1),
 	[SPRITE_FISH_SMALL] = _UV(0, 3, 1),
+	[SPRITE_FISH_FLYING] = _UV(1, 3, 1),
+	[SPRITE_FISH_BIKE] = _UV(3, 1, 1),
+	[SPRITE_FISH_SUBMARINE] = _UV(2, 2, 2),
 };
 
 static struct sprite_vert {

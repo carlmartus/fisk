@@ -24,7 +24,9 @@ enum spriteId {
 	SPRITE_HOOK,
 	SPRITE_ROPE,
 	SPRITE_FISH_SMALL,
-	SPRITE_FISH_JUMPER,
+	SPRITE_FISH_FLYING,
+	SPRITE_FISH_BIKE,
+	SPRITE_FISH_SUBMARINE,
 };
 
 const esVec2 spriteNoRot;
@@ -46,6 +48,9 @@ void seaRender(void);
 enum fishType {
 	FISH_NONE=0,
 	FISH_SMALL,
+	FISH_BIKE,
+	FISH_FLYING,
+	FISH_SUBMARINE,
 };
 
 int fishSetup(void);
@@ -53,6 +58,7 @@ void fishMoveFrame(float fr, float x);
 void fishRender(void);
 void fishRenderHooked(enum fishType type, float x, float y, esVec2 trans);
 enum fishType fishHook(float x, float y);
+void fishEnableSpawn(enum fishType type);
 
 // score.c
 int scoreSetup(void);

@@ -13,17 +13,25 @@ static const struct {
 	int kgs;
 } fishes[] = {
 	[FISH_SMALL] = { 4 },
+	[FISH_BIKE] = { 12 },
+	[FISH_FLYING] = { 2 },
+	[FISH_SUBMARINE] = { 12000 },
 };
 
 static const struct {
 	int kgs, fish0, fish1, fish2, fish3;
 	float f0, a0, f1, a1;
+	enum fishType enable_fish;
 	const char *name;
 } challenges[] = {
-	{ 0,	2, 0, 0, 0,		0.0f, 0.0f, 0.0f, 0.0f, "Welcome" },
-	{ 20,	0, 0, 0, 0,		0.5f, 0.6f, 0.7f, 0.2f, "Fisherman" },
-	{ 0,	0, 0, 0, 0,		1.2f, 0.8f, 1.3f, 0.2f, "Shaky storm" },
+	{ 0,	2, 0, 0, 0,		0.0f, 0.0f, 0.0f, 0.0f,		FISH_NONE, "Welcome" },
+	{ 20,	0, 0, 0, 0,		0.5f, 0.6f, 0.7f, 0.2f,		FISH_NONE, "Fisherman" },
+	{ 0,	0, 5, 0, 0,		0.2f, 0.9f, 1.3f, 0.2f,		FISH_BIKE, "Trashman" },
+	{ 80,	0, 0, 2, 0,		0.1f, 0.2f, 0.3f, 0.4f,		FISH_FLYING, "Fancy fish" },
+	{ 9000,	0, 0, 0, 0,		0.3f, 0.9f, 0.7f, 0.2f,		FISH_SUBMARINE, "Something big" },
+	{ 0,	1, 1, 1, 1,		0.1f, 3.8f, 1.3f, 0.4f,		FISH_NONE, "One of each" },
 };
+#define CHALLENGE_COUNT 6
 
 void
 flush(void)
@@ -38,30 +46,35 @@ flush(void)
 		}
 	}
 
-	fprintf(stderr, "<p>Current mission:<br/><b>%s</b></p>\n<ul>",
+	fprintf(stderr, "<p>Current mission:<br/><b>\"%s\"</b><br/>Objectives:</p>\n<ul>",
 			challenges[challenge].name);
 
 	if (challenges[challenge].kgs > 0) {
-		fprintf(stderr, "<li>Catch %d kg fish</li>\n", challenges[challenge].kgs);
+		fprintf(stderr, "<li>Catch %d kg</li>\n", challenges[challenge].kgs);
 	}
 
 	if (challenges[challenge].fish0 > 0) {
 		fprintf(stderr, "<li>Salmon qty: %d</li>\n", challenges[challenge].fish0);
 	}
 	if (challenges[challenge].fish1 > 0) {
-		fprintf(stderr, "<li>Turtles qty: %d</li>\n", challenges[challenge].fish1);
+		fprintf(stderr, "<li>Bikes qty: %d</li>\n", challenges[challenge].fish1);
 	}
 	if (challenges[challenge].fish2 > 0) {
 		fprintf(stderr, "<li>Flying fish qty: %d</li>\n", challenges[challenge].fish2);
 	}
 	if (challenges[challenge].fish3 > 0) {
-		fprintf(stderr, "<li>Questionable fish qty: %d</li>\n", challenges[challenge].fish3);
+		fprintf(stderr, "<li>Big things qty: %d</li>\n", challenges[challenge].fish3);
 	}
 
 	fprintf(stderr, "</ul>\n");
 
 	fprintf(stderr, "<p>Your status:</p>\n");
 	fprintf(stderr, "<p>You've caught <b>%d</b> Kg fish</p>\n", kgs);
+
+	if (catches[0] > 0)		fprintf(stderr, "<p>%d salmons</p>\n", catches[0]);
+	if (catches[1] > 0)		fprintf(stderr, "<p>%d bikes</p>\n", catches[1]);
+	if (catches[2] > 0)		fprintf(stderr, "<p>%d flying</p>\n", catches[2]);
+	if (catches[3] > 0)		fprintf(stderr, "<p>%d big things</p>\n", catches[3]);
 }
 
 static void
@@ -90,6 +103,10 @@ load_challenge(int id)
 	reqs[2] = challenges[id].fish2;
 	reqs[3] = challenges[id].fish3;
 
+	if (challenges[id].enable_fish) {
+		fishEnableSpawn(challenges[id].enable_fish);
+	}
+
 	flush();
 }
 
@@ -107,10 +124,22 @@ scoreSetup(void)
 	return 0;
 }
 
+static void
+post_goal(void)
+{
+	fprintf(stderr, "<p><b>YOU FINNISHED THE GAME</b></p><p>:)</p>\n");
+}
+
 void
 scoreNextChallenge(void)
 {
-	load_challenge(++challenge);
+	if (challenge+1 >= CHALLENGE_COUNT) {
+		post_goal();
+
+		seaWaveSettings(0.0f, 0.0f, 0.0f, 0.0f);
+	} else {
+		load_challenge(++challenge);
+	}
 }
 
 static int
