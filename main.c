@@ -15,7 +15,7 @@ loop_frame(float fr)
 	esVec2 boat_pos = boatGetPosition();
 
 	fishMoveFrame(fr, boat_pos.x);
-	seaPosition(fr, boat_pos.x-15.0f);
+	seaPosition(fr, boat_pos.x-22.0f);
 
 	seaRender();
 	fishRender();
@@ -25,11 +25,13 @@ loop_frame(float fr)
 	esGameGlSwap();
 }
 
+#ifndef EMSCRIPTEN
 static void
 key_quit()
 {
 	esGameLoopQuit();
 }
+#endif
 
 int
 main()
@@ -37,8 +39,6 @@ main()
 	esGameInit(WINW, WINH);
 
 	glClearColor(0.1, 0.1, 0.3, 1.0);
-
-	esGameRegisterKey(SDLK_q, key_quit);
 
 	if (seaSetup()) {
 		printf("Cannot create sea!\n");
@@ -68,6 +68,11 @@ main()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+#ifndef EMSCRIPTEN
+	esGameRegisterKey(SDLK_q, key_quit);
+#endif
+
+	scoreNextChallenge();
 	esGameLoop(loop_frame, NULL, 0);
 	return 0;
 }

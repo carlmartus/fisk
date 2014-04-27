@@ -6,8 +6,8 @@
 #define BOAT_UP 0.7f
 #define STATE_UNDER 1
 #define GRAVITY 9.82f
-#define FLOATING (GRAVITY*3.0f)
-#define FLOATING_ADD 4.0f
+#define FLOATING 6.5f
+#define FLOATING_ADD 1.5f
 #define MOVEX 8.0f
 #define MAXSPEED 5.0f
 
@@ -16,6 +16,7 @@
 #define ROPE_HAUL 3.0f
 #define ROPE_MINLEN 1.25f
 #define ROPE_MAXLEN 32.0f
+#define ROPE_WIDTH 0.05f
 
 static float x, y;
 static float dx, dy;
@@ -27,6 +28,7 @@ static unsigned int ctrl_left, ctrl_right, ctrl_down, ctrl_up;
 
 static esVec2 cam;
 
+static enum fishType hook_fish;
 static float hook_rope;
 static esVec2 hook_loc, hook_dir;
 
@@ -38,11 +40,6 @@ static void key_down(int sdlkey, int down)	{ ctrl_down = down; }
 int
 boatSetup()
 {
-	esGameRegisterKey(SDLK_LEFT, key_left);
-	esGameRegisterKey(SDLK_RIGHT, key_right);
-	esGameRegisterKey(SDLK_UP, key_up);
-	esGameRegisterKey(SDLK_DOWN, key_down);
-
 	states = 0;
 	ctrl_left = 0;
 	ctrl_right = 0;
@@ -63,7 +60,19 @@ boatSetup()
 	cam.x = x;
 	cam.y = y;
 
+	esGameRegisterKey(SDLK_LEFT, key_left);
+	esGameRegisterKey(SDLK_RIGHT, key_right);
+	esGameRegisterKey(SDLK_UP, key_up);
+	esGameRegisterKey(SDLK_DOWN, key_down);
+
 	return 0;
+}
+
+static void
+haul_catch(void)
+{
+	scoreCaught(hook_fish);
+	hook_fish = FISH_NONE;
 }
 
 static void
@@ -114,7 +123,13 @@ move_boat(float fr)
 
 		} else if (ly < 0.0f && hook_rope > ROPE_MINLEN) {
 			hook_rope -= ROPE_HAUL*fr;
-			if (hook_rope < ROPE_MINLEN) hook_rope = ROPE_MINLEN;
+			if (hook_rope < ROPE_MINLEN) {
+
+				if (hook_fish != FISH_NONE) {
+					haul_catch();
+				}
+				hook_rope = ROPE_MINLEN;
+			}
 		}
 	}
 
@@ -149,16 +164,57 @@ move_boat(float fr)
 	cam = commonTowardsVec2(cam, cam_dst, 100.0f*fr);
 }
 
+static void
+fish_hook(void)
+{
+	if (hook_rope == ROPE_MINLEN || hook_fish != FISH_NONE) return;
+
+	enum fishType fish = fishHook(hook_loc.x, hook_loc.y);
+	if (fish != FISH_NONE) {
+		hook_fish = fish;
+	}
+}
+
 void
 boatFrame(float fr)
 {
 	move_boat(fr);
+	fish_hook();
 
 	esProjOrtho(mvp,
 			cam.x - ZOOM * (float) WINW,
 			cam.y + ZOOM * (float) WINH,
 			cam.x + ZOOM * (float) WINW,
 			cam.y - ZOOM * (float) WINH);
+}
+
+static void
+render_rope(void)
+{
+	esVec2 trans = {
+		-(y - hook_loc.y),
+		  x - hook_loc.x,
+	};
+
+	trans = commonNormalizeVec2(trans);
+	trans.x *= ROPE_WIDTH;
+	trans.y *= ROPE_WIDTH;
+
+	float u0, v0, u1, v1;
+	spriteGetUvs(SPRITE_ROPE, &u0, &v0, &u1, &v1);
+
+	esVec2 linkA0 = { x+trans.x, y+trans.y };
+	esVec2 linkA1 = { x-trans.x, y-trans.y };
+	esVec2 linkB0 = { hook_loc.x+trans.x, hook_loc.y+trans.y };
+	esVec2 linkB1 = { hook_loc.x-trans.x, hook_loc.y-trans.y };
+
+	spritePushCustomVertice(linkA0.x, linkA0.y, u0, v0);
+	spritePushCustomVertice(linkA1.x, linkA1.y, u1, v0);
+	spritePushCustomVertice(linkB0.x, linkB0.y, u0, v1);
+
+	spritePushCustomVertice(linkB1.x, linkB1.y, u1, v1);
+	spritePushCustomVertice(linkB0.x, linkB0.y, u0, v1);
+	spritePushCustomVertice(linkA1.x, linkA1.y, u1, v0);
 }
 
 void
@@ -172,7 +228,15 @@ boatRender(void)
 			-dist.y * 0.3f,
 			 dist.x * 0.3f,
 		};
+
+		render_rope();
+
 		spriteAdd(SPRITE_HOOK, hook_loc.x, hook_loc.y, trans);
+
+		if (hook_fish != FISH_NONE) {
+			fishRenderHooked(hook_fish, hook_loc.x, hook_loc.y, dist);
+		}
+
 	} else {
 		esVec2 trans = { climb_vec.x*0.35f, 0.0f };
 		spriteAdd(SPRITE_HOOK,x, y+ROPE_MINLEN, trans);

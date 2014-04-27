@@ -17,6 +17,7 @@ static const struct file_uv {
 } file_uvs[] = {
 	[SPRITE_SHIP] = _UV(0, 0, 2),
 	[SPRITE_HOOK] = _UV(2, 1, 1),
+	[SPRITE_ROPE] = _UV(3, 0, 1),
 	[SPRITE_FISH_SMALL] = _UV(0, 3, 1),
 };
 
@@ -121,6 +122,12 @@ spriteAdd(enum spriteId id, float x, float y, esVec2 trans)
 }
 
 void
+spritePushCustomVertice(float x, float y, float u, float v)
+{
+	push_vertex(x, y, u, v);
+}
+
+void
 spriteFlushRender(void)
 {
 	esGeoBufCopy(&vertices, softverts,
@@ -134,5 +141,15 @@ spriteFlushRender(void)
 	esGeoRender(&geometry, vertcount);
 
 	vertcount = 0;
+}
+
+void
+spriteGetUvs(enum spriteId id, float *u0, float *v0, float *u1, float *v1)
+{
+	struct file_uv uv = file_uvs[id];
+	*u0 = uv.u0;
+	*v0 = uv.v0;
+	*u1 = uv.u1;
+	*v1 = uv.v1;
 }
 

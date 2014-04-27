@@ -10,11 +10,6 @@ static float centre;
 static int framecount = 0;
 static int generation = 0;
 
-enum fishType {
-	FISH_NONE=0,
-	FISH_SMALL,
-};
-
 #define MAX_FISH 100
 static struct fish {
 	enum fishType type;
@@ -74,6 +69,7 @@ fishSetup(void)
 	memset(fishes, 0, sizeof(fishes));
 
 	spawn_something(0.0f);
+	spawn_something(1.0f);
 	return 0;
 }
 
@@ -201,5 +197,48 @@ fishRender(void)
 
 		itr++;
 	}
+}
+
+void
+fishRenderHooked(enum fishType type, float x, float y, esVec2 trans)
+{
+	trans.x *= infos[type].radius;
+	trans.y *= infos[type].radius;
+
+	x -= trans.x;
+	y -= trans.y;
+
+	spriteAdd(infos[type].sprite, x, y, trans);
+}
+
+static int
+is_within(float ax, float ay, float bx, float by, float limit)
+{
+	float cubex = fabsf(ax - bx);
+	float cubey = fabsf(ay - by);
+
+	return cubex < limit && cubey < limit;
+}
+
+enum fishType
+fishHook(float x, float y)
+{
+	struct fish *itr, *end;
+	itr = fishes;
+	end = fishes + MAX_FISH;
+
+	while (itr < end) {
+		if (itr->type != FISH_NONE) {
+			if (is_within(x, y, itr->x, itr->y, infos[itr->type].radius)) {
+				enum fishType type = itr->type;
+				itr->type = FISH_NONE;
+				return type;
+			}
+		}
+
+		itr++;
+	}
+
+	return FISH_NONE;
 }
 

@@ -2,7 +2,7 @@
 #include <GL/glew.h>
 #include <math.h>
 
-#define WAVE_CELLS 13
+#define WAVE_CELLS 18
 #define WAVE_CELLWIDTH 3.0f
 #define WAVE_SPEED 10.0f
 #define MAX_VERTS 300
@@ -21,6 +21,10 @@ static esShader shader;
 static esGeo geometry;
 static esGeoBuf vertices;
 static int vertcount;
+
+struct {
+	float f0, a0, f1, a1;
+} waves_current, waves_set;
 
 static struct sea_vert {
 	float x, y;
@@ -99,9 +103,27 @@ generate_vertices(float x)
 }
 
 void
+seaWaveSettings(float f0, float a0, float f1, float a1)
+{
+	waves_set.f0 = f0;
+	waves_set.a0 = a0;
+	waves_set.f1 = f1;
+	waves_set.a1 = a1;
+}
+
+void
 seaPosition(float fr, float startx)
 {
 	prog += fr;
+
+#define CHANGE_WAVE(a, b)\
+	if (a != b) a = commonTowardsFloat(a, b, fr*0.2f);
+
+	CHANGE_WAVE(waves_current.f0, waves_set.f0);
+	CHANGE_WAVE(waves_current.a0, waves_set.a0);
+	CHANGE_WAVE(waves_current.f1, waves_set.f1);
+	CHANGE_WAVE(waves_current.a1, waves_set.a1);
+
 	int cell = startx * (1.0f / WAVE_CELLWIDTH);
 	startx = (float) cell * WAVE_CELLWIDTH;
 	generate_vertices(startx);
@@ -110,8 +132,9 @@ seaPosition(float fr, float startx)
 float
 seaWaveHeight(float x)
 {
-	x = prog*WAVE_SPEED + x;
-	return sinf(x*0.2f) - 0.2f*cosf(x*0.6f);
+	return
+		waves_current.a0 * sinf((x + prog)*waves_current.f0) +
+		waves_current.a1 * cosf((x - prog)*waves_current.f1);
 }
 
 void

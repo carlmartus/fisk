@@ -22,6 +22,7 @@ const float *boatMvp(void);
 enum spriteId {
 	SPRITE_SHIP,
 	SPRITE_HOOK,
+	SPRITE_ROPE,
 	SPRITE_FISH_SMALL,
 	SPRITE_FISH_JUMPER,
 };
@@ -30,24 +31,34 @@ const esVec2 spriteNoRot;
 
 int spriteSetup(void);
 void spriteAdd(enum spriteId id, float x, float y, esVec2 trans);
+void spritePushCustomVertice(float x, float y, float u, float v);
 void spriteFlushRender(void);
+void spriteGetUvs(enum spriteId id, float *u0, float *v0, float *u1, float *v1);
 
 // sea.c
 int seaSetup(void);
 void seaPosition(float fr, float startx);
 float seaWaveHeight(float x);
+void seaWaveSettings(float f0, float a0, float f1, float a1);
 void seaRender(void);
 
 // fish.c
+enum fishType {
+	FISH_NONE=0,
+	FISH_SMALL,
+};
+
 int fishSetup(void);
 void fishMoveFrame(float fr, float x);
 void fishRender(void);
+void fishRenderHooked(enum fishType type, float x, float y, esVec2 trans);
+enum fishType fishHook(float x, float y);
 
 // score.c
 int scoreSetup(void);
-void scoreResetObjective(int kgs, int fish0, int fish1, int fish2, int fish3);
-void scoreCaught(int fish_id);
-void scoreFlush(void);
+void scoreNextChallenge(void);
+void scoreHelp(void);
+void scoreCaught(enum fishType id);
 
 #endif
 
